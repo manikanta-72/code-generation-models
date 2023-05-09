@@ -12,7 +12,7 @@ class PadMask(nn.Module()):
         mask = (x == self.src_pad_token).unsqueeze(-2)
         return mask
 
-    def create_trg_mask(self, l):
+    def create_tri_mask(self, l):
         ones = torch.ones(l, l, dtype=torch.uint8)
         mask = torch.triu(ones, diagonal=1).unsqueeze(0)
 

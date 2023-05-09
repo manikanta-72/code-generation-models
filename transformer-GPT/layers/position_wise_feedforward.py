@@ -3,11 +3,11 @@ import torch.nn as nn
 
 #ToDo dropout
 
-class PointwiseFeedforward(nn.Module()):
+class PositionwiseFeedforward(nn.Module()):
 
     def __inti__(self,d_model,d_hidden):
 
-        super(PointwiseFeedforward,self).__init__()
+        super(PositionwiseFeedforward,self).__init__()
 
         self.L1 = nn.Linear(d_model, d_hidden)
         self.L2 = nn.Linear(d_hidden, d_model)
