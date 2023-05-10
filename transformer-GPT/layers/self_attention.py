@@ -4,7 +4,7 @@ import torch.nn.functional as F
 from masking.masking import PadMask
 class SelfAttention(nn.Module()):
 
-    def __init__(self, d_model, d_k=None, d_v=None):
+    def __init__(self, d_model, d_k=None, d_v=None, enable_mask = False):
         super(SelfAttention).__init__()
         self.d_model = d_model
         if(d_k and d_v):
@@ -12,6 +12,7 @@ class SelfAttention(nn.Module()):
             self.d_v = d_v
         else:
             self.d_k = self.d_v = self.d_q = d_model
+        self.masking = enable_mask
 
         # w's are initialized from uniform distribution
         self.q = nn.Linear(self.d_model, self.d_q, bias=False)
@@ -33,8 +34,9 @@ class SelfAttention(nn.Module()):
         
         # Compute logits and mask to allow the passage of past knowledge
         logits = (Q @ K_T)
-        tri_mask = self.mask.create_tri_mask(self.d_k)
-        logits[tri_mask] = float("Inf")
+        if self.masking:
+            tri_mask = self.mask.create_tri_mask(self.d_k)
+            logits[tri_mask] = float("Inf")
 
         # apply softmax to obtain the attention weightage of previous tokens to current token
         scores = self.softmax(logits/torch.sqrt(self.d_k))
